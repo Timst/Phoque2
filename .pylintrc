@@ -1,0 +1,2 @@
+[MESSAGES CONTROL]
+disable=missing-function-docstring, missing-module-docstring, missing-class-docstring, invalid-name, line-too-long, broad-exception-caught, missing-final-newline, logging-fstring-interpolation

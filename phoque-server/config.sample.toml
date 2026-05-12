@@ -1,0 +1,3 @@
+[files]
+# Main DB (will be created at first run)
+database = "/var/data/donuts/donuts.db"
