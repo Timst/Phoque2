@@ -1,40 +1,12 @@
 '''Compute values for the Admin panel'''
 
 import logging
-from enum import Enum
-from dataclasses import dataclass
-from datetime import timedelta, datetime, date, time
-
+from datetime import datetime, date, time
 
 from cachetools import cached, TTLCache
 
 from data import Database
-from shared.types import CallType
-
-class OpenState(Enum):
-    OPEN = 1
-    LAST_CALL = 2
-    FINISHING = 3
-    CLOSED = 4
-
-    def next(self):
-        '''Get following state'''
-        if self.value == 4:
-            return OpenState.OPEN
-        else:
-            return OpenState(self.value + 1)
-
-@dataclass
-class Stats:
-    current: int
-    top: int
-    depth: int
-    time_per_crepe: timedelta
-    wait: timedelta
-    remaining: timedelta
-    resetting: bool
-    switching: bool
-    state: OpenState
+from shared.types import CallType, OpenState, TicketState
 
 class Admin:
     database: Database
@@ -43,8 +15,7 @@ class Admin:
     resetting: bool
     switching: bool
 
-    stats: Stats
-
+    stats: TicketState
     state: OpenState
 
     def __init__(self, database: Database):
@@ -55,7 +26,7 @@ class Admin:
         self.state = OpenState.OPEN
 
     @cached(cache=TTLCache(maxsize=1024, ttl=1))
-    def get_stats(self):
+    def get_stats(self) -> TicketState:
         '''Return various data on the state of the queue'''
         current = self.database.get_latest_called_ticket()
         top = self.database.get_latest_ticket_number()
@@ -64,7 +35,6 @@ class Admin:
             current = 0
 
         depth = top - current
-        remaining = self.end_of_shift - datetime.now()
 
         samples = self.database.get_called_tickets_sample()
 
@@ -79,7 +49,14 @@ class Admin:
             time_per_crepe = total_time / len(samples)
             wait = time_per_crepe * depth
 
-        return Stats(current, top, depth, time_per_crepe, wait, remaining, self.resetting, self.switching, self.state)
+        return TicketState(
+            current = current,
+            top = top,
+            depth = depth,
+            time_per_crepe = time_per_crepe,
+            wait = wait,
+            remaining = self.end_of_shift - datetime.now(),
+            state = self.state)
 
     def add(self):
         '''Add a ticket to the queue (if open)'''
