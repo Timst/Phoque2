@@ -1,32 +1,45 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 
+from indicator import Device, IndicatorBoard
 from data import Database
 from admin import Admin
+from heartbeats import HeartbeatManager
 from shared.types import CallType, Init, OpenState, Template
 
-from datetime import datetime
+from datetime import datetime, time
 
-app = FastAPI()
-data = Database()
-state = OpenState.OPEN
-admin = Admin(data)
+board = IndicatorBoard()
 
-class ConnectionManager:
-    def __init__(self):
-        self.active_connections: list[WebSocket] = []
+try:
+    data = Database()
+    state = OpenState.OPEN
+    admin = Admin(data)
 
-    async def connect(self, websocket: WebSocket):
-        await websocket.accept()
-        self.active_connections.append(websocket)
+    class ConnectionManager:
+        def __init__(self):
+            self.active_connections: list[WebSocket] = []
 
-    def disconnect(self, websocket: WebSocket):
-        self.active_connections.remove(websocket)
+        async def connect(self, websocket: WebSocket):
+            await websocket.accept()
+            self.active_connections.append(websocket)
 
-    async def broadcast(self, message: dict):
-        for connection in self.active_connections:
-            await connection.send_json(message)
+        def disconnect(self, websocket: WebSocket):
+            self.active_connections.remove(websocket)
 
-manager = ConnectionManager()
+        async def broadcast(self, message: dict):
+            for connection in self.active_connections:
+                await connection.send_json(message)
+
+    manager = ConnectionManager()
+    heartbeat_manager = HeartbeatManager(board)
+    heartbeat_manager.start()
+
+    app = FastAPI()
+
+    board.switch_indicator(Device.SERVER, False)
+except Exception:
+    board.switch_indicator(Device.SERVER, True)
+    raise
 
 @app.get("/init")
 def init() -> Init:
@@ -55,3 +68,11 @@ async def display(websocket: WebSocket):
             await websocket.receive_text()
     except WebSocketDisconnect:
         manager.disconnect(websocket)
+
+@app.get("/heartbeat/{client_id}")
+async def heartbeat(client_id: str):
+    match client_id:
+        case "backoffice":
+            heartbeat_manager.update_heartbeat(Device.BACKOFFICE, time())
+        case "display":
+            heartbeat_manager.update_heartbeat(Device.DISPLAY, time())

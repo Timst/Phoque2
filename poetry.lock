@@ -5425,6 +5425,52 @@ files = [
 ]
 
 [[package]]
+name = "smbus2"
+version = "0.6.1"
+description = "smbus2 is a drop-in replacement for smbus-cffi/smbus-python in pure Python"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "smbus2-0.6.1-py2.py3-none-any.whl", hash = "sha256:650feeb27ca0ed58b07db4c10201c2a662c41305b7bf6e5fab9d888056f48180"},
+    {file = "smbus2-0.6.1.tar.gz", hash = "sha256:2b043372abf8f6029a632c3aab36b641c5d5872b1cbad599fc68e17ac4fd90a5"},
+]
+
+[package.extras]
+docs = ["sphinx (>=7)", "sphinx-rtd-theme"]
+qa = ["flake8"]
+
+[[package]]
+name = "sparkfun-qwiic-i2c"
+version = "2.0.0"
+description = "SparkFun Electronics Qwiic I2C library"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "sparkfun_qwiic_i2c-2.0.0-py3-none-any.whl", hash = "sha256:75a8f0353fbd3208780f9c0a71cc87d050c7853538d0a7198121b318c0d2ecd5"},
+    {file = "sparkfun_qwiic_i2c-2.0.0.tar.gz", hash = "sha256:1e9567815c1c7a4c03fac0d9ca01a24b7deb1368d319b014daa45d965829fab6"},
+]
+
+[package.dependencies]
+smbus2 = "*"
+
+[[package]]
+name = "sparkfun-qwiic-led-stick"
+version = "2.0.0"
+description = "Sparkfun Electronics Qwiic LED_Stick Package"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "sparkfun_qwiic_led_stick-2.0.0-py3-none-any.whl", hash = "sha256:35732d8db14bd647387799bcebc83730ab4ff3d8c9bcc8f9779dca59af5d5403"},
+    {file = "sparkfun_qwiic_led_stick-2.0.0.tar.gz", hash = "sha256:cd72c7e3422904cba49c836a0d292d031f9fbab73dc9d6c848295dd5877a3146"},
+]
+
+[package.dependencies]
+sparkfun_qwiic_i2c = "*"
+
+[[package]]
 name = "sqlalchemy"
 version = "2.0.48"
 description = "Database Abstraction Library"
@@ -5907,4 +5953,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12"
-content-hash = "da38d08d4c6ade21a319ccbf9b1711c37e6f95003ac95ff46f925c55c263e896"
+content-hash = "7df7294008511244e564591969b037bd400e93282486ecdb70e2a61a3778b504"
