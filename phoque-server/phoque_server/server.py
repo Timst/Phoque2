@@ -1,10 +1,10 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 
-from indicator import Device, IndicatorBoard
-from data import Database
-from admin import Admin
-from heartbeats import HeartbeatManager
-from shared.types import CallType, Init, OpenState, Template
+from .indicator import Device, IndicatorBoard
+from .data import Database
+from .admin import Admin
+from .heartbeats import HeartbeatManager
+from phoque_shared.types import CallType, Init, OpenState, Template
 
 from datetime import datetime, time
 

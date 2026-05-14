@@ -1,7 +1,6 @@
-import datetime
-from pydantic import BaseModel
+from datetime import datetime, timedelta
+from pydantic import BaseModel, ConfigDict
 from enum import Enum
-from datetime import timedelta
 
 class Status(BaseModel):
     current_number: int
@@ -14,6 +13,8 @@ class Template(BaseModel):
     tagline: str
 
 class Init(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     start_number: int
     template: Template
     current_time: datetime
@@ -37,6 +38,8 @@ class OpenState(Enum):
             return OpenState(self.value + 1)
 
 class TicketState(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     current: int
     top: int
     depth: int

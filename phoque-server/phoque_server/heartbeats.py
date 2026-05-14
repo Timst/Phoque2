@@ -2,7 +2,7 @@ import asyncio
 from datetime import datetime, time
 from dataclasses import dataclass
 
-from indicator import Device, IndicatorBoard, Status
+from .indicator import Device, IndicatorBoard, Status
 
 @dataclass
 class Heartbeats:

@@ -1,0 +1,22 @@
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "phoque-display"
+version = "0.1.0"
+description = "Phoque queuing system display client"
+authors = [
+    {name = "Timst",email = "timst44@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pyttsx3 (>=2.99,<3.0)",
+    "playsound3 (>=3.3.1,<4.0.0)",
+    "websockets (>=12.0,<13.0.0)",
+    "phoque-shared (>=0.1.0,<0.2.0)",
+]
+
+[project.scripts]
+phoque-display = "phoque_display.__main__:main"

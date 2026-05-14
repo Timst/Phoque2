@@ -5,8 +5,8 @@ from datetime import datetime, date, time
 
 from cachetools import cached, TTLCache
 
-from data import Database
-from shared.types import CallType, OpenState, TicketState
+from .data import Database
+from phoque_shared.types import CallType, OpenState, TicketState
 
 class Admin:
     database: Database

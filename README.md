@@ -15,24 +15,56 @@ Phoque v1 ran everything from the same RPI, which created some logistical headac
 
 <img src="./Phoque_schema.png" width="1200"/>
 
-The new system will rely on at least three independent Pis:
+## Architecture
 
-- The existing Rapberry Pi 5 will:
-  - Operate the guest button, webcam and printer
-  - Emit a wifi network for the other devices to connect to
-  - Run a server with a REST endpoint used by everything else
-  - **Code**: everything under `phoque-button` and `phoque-server`
+The new system is a **monorepo with 5 independent packages** that can be installed separately on different Raspberry Pis:
 
-- A new Raspberry Pi Zero 2W will:
-  - Run the "backoffice", including a screen shown to us with the current status of the line etc.
-  - Call numbers using [RF433 clickers](https://www.amazon.com/dp/B0DFXRVJ5L)
-  - **Code**: everything under `phoque-backoffice`
+### Components
 
-- Another Zero 2W will:
-  - Run the screen, which will no longer be a standard TV but will instead be an [LED matrix](https://www.walmart.com/ip/AZERONE-P10-Led-Matrix-Outdoor-Waterproof-Screen-1-4scan-SMD3535-3in1-RGB-Full-Color-LED-Display-Module-Panel-Board-320x160mm-32x16-Pixels-RGB-Full-C/17004771717) driven by a [HUB75 module](https://www.amazon.com/dp/B0FBKYYP15)
-  - Also call numbers on the speakers
-  - **Code**: everything under `phoque-display`
+- **phoque-shared**: Shared types and models (minimal dependencies - just pydantic)
+- **phoque-server**: REST API server with database and admin logic
+- **phoque-button**: GPIO button + camera + printer client
+- **phoque-backoffice**: Backoffice client for calling numbers
+- **phoque-display**: LED matrix display + audio announcements
+
+### Installation
+
+Each component can be installed independently:
+
+```bash
+# Install shared types first (required by all others)
+pip install git+https://github.com/Timst/Phoque2.git#subdirectory=phoque-shared
+
+# Install server on main Pi
+pip install git+https://github.com/Timst/Phoque2.git#subdirectory=phoque-server
+
+# Install button client on guest-facing Pi
+pip install git+https://github.com/Timst/Phoque2.git#subdirectory=phoque-button
+
+# Install backoffice on calling station Pi
+pip install git+https://github.com/Timst/Phoque2.git#subdirectory=phoque-backoffice
+
+# Install display on screen Pi
+pip install git+https://github.com/Timst/Phoque2.git#subdirectory=phoque-display
+```
+
+### Running
+
+Each component provides a CLI command:
+
+```bash
+phoque-server      # Start the REST API server
+phoque-button      # Run button/camera/printer client
+phoque-backoffice  # Run backoffice number-calling client
+phoque-display     # Run display/audio client
+```
+
+### Development
+
+For local development, install all packages in editable mode:
+
+```bash
+pip install -e ./phoque-shared -e ./phoque-server -e ./phoque-button -e ./phoque-backoffice -e ./phoque-display
+```
 
 The Pi units will be linked to one another with CAT6 cables, which will provide both power (using a PoE switch) and a data link.
-
-Shared types and whatnot will be under `shared`.

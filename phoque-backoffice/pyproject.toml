@@ -1,0 +1,21 @@
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "phoque-backoffice"
+version = "0.1.0"
+description = "Phoque queuing system backoffice client"
+authors = [
+    {name = "Timst",email = "timst44@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "gpiozero (>=2.0.1,<3.0.0)",
+    "requests (>=2.33.1,<3.0.0)",
+    "phoque-shared (>=0.1.0,<0.2.0)",
+]
+
+[project.scripts]
+phoque-backoffice = "phoque_backoffice.__main__:main"

@@ -6,7 +6,7 @@ import requests
 
 from gpiozero import Button as GpioButton
 
-from composer import Composer
+from .composer import Composer
 
 SERVER_URL = "http://192.168.1.1:8000/queue"
 

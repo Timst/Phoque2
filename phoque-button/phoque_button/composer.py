@@ -6,8 +6,8 @@ import logging
 
 from PIL import Image, ImageDraw, ImageFont
 
-from camera import Camera
-from printer import Printer
+from .camera import Camera
+from .printer import Printer
 
 PHOTO_FOLDER = "/root/phoque/static/photos/"
 

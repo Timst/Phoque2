@@ -5,7 +5,7 @@ from time import sleep
 from playsound3 import playsound
 from pyttsx3 import Engine, init as tts_init
 from pyttsx3.voice import Voice
-from shared.types import CallType
+from phoque_shared.types import CallType
 
 class Sound:
     engine: Engine
