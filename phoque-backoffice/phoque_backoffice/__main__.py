@@ -1,13 +1,13 @@
 import asyncio
-
+from time import sleep
 import requests
-from gpiozero import Button
 from signal import pause
 
-SERVER_URL = "http://192.168.1.1:8000"
-GPIO_PIN = 18
+from radio import Radio
+from browser import Browser
+from input import Input
 
-call_button = Button(GPIO_PIN, pull_up=True, bounce_time=0.1)
+SERVER_URL = "http://192.168.1.1:8000"
 
 async def emit_heartbeat():
     while True:
@@ -15,23 +15,22 @@ async def emit_heartbeat():
 
         await asyncio.sleep(5)
 
-def call_next_number():
-    try:
-        response = requests.get(SERVER_URL + "/serve", timeout=3)
-
-        if response.status_code == 200:
-            print(f"Success: Called ticket {response.text}")
-        else:
-            print(f"Server error: {response.status_code}")
-
-    except requests.exceptions.RequestException as e:
-        print(f"Network error: {e}")
-
-call_button.when_pressed = call_next_number
-
 def main():
     """Run the Phoque backoffice client."""
     asyncio.create_task(emit_heartbeat())
+
+    radio = Radio(SERVER_URL)
+    radio.listen()
+
+    input_handler = Input(SERVER_URL)
+    input_handler.start()
+
+    # Wait for system to finish initializing
+    sleep(10)
+
+    browser = Browser()
+    browser.launch_browser_windows()
+
     pause()
 
 if __name__ == "__main__":

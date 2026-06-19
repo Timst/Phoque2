@@ -76,3 +76,5 @@ async def heartbeat(client_id: str):
             heartbeat_manager.update_heartbeat(Device.BACKOFFICE, time())
         case "display":
             heartbeat_manager.update_heartbeat(Device.DISPLAY, time())
+        case "button":
+            heartbeat_manager.update_heartbeat(Device.BUTTON, time())

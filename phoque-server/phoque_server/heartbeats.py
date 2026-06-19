@@ -1,5 +1,5 @@
 import asyncio
-from datetime import datetime, time
+from datetime import time
 from dataclasses import dataclass
 
 from .indicator import Device, IndicatorBoard, Status
@@ -8,6 +8,7 @@ from .indicator import Device, IndicatorBoard, Status
 class Heartbeats:
     backoffice: float | None = None
     display: float | None = None
+    button: float | None = None
 
 class HeartbeatManager():
     board: IndicatorBoard
@@ -22,6 +23,7 @@ class HeartbeatManager():
         while True:
             self.board.switch_indicator(Device.BACKOFFICE, self.client_status(self.heartbeats.backoffice))
             self.board.switch_indicator(Device.DISPLAY, self.client_status(self.heartbeats.display))
+            self.board.switch_indicator(Device.BUTTON, self.client_status(self.heartbeats.button))
 
             await asyncio.sleep(5)
 
@@ -31,6 +33,8 @@ class HeartbeatManager():
                 self.heartbeats.backoffice = last_seen
             case Device.DISPLAY:
                 self.heartbeats.display = last_seen
+            case Device.BUTTON:
+                self.heartbeats.button = last_seen
 
     def client_status(self, last_seen: time) -> Status:
         now = time()

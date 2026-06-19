@@ -24,7 +24,7 @@ The new system is a **monorepo with 5 independent packages** that can be install
 - **phoque-shared**: Shared types and models (minimal dependencies - just pydantic)
 - **phoque-server**: REST API server with database and admin logic
 - **phoque-button**: GPIO button + camera + printer client
-- **phoque-backoffice**: Backoffice client for calling numbers
+- **phoque-backoffice**: Backoffice client for calling numbers and displaying the state of the line
 - **phoque-display**: LED matrix display + audio announcements
 
 ### Installation
@@ -55,7 +55,7 @@ Each component provides a CLI command:
 ```bash
 phoque-server      # Start the REST API server
 phoque-button      # Run button/camera/printer client
-phoque-backoffice  # Run backoffice number-calling client
+phoque-backoffice  # Run backoffice client
 phoque-display     # Run display/audio client
 ```
 

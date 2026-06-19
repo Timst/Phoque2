@@ -13,8 +13,7 @@ class Device(Enum):
     SERVER = 1
     BACKOFFICE = 2
     DISPLAY = 3
-    CAMERA = 4
-    PRINTER = 5
+    BUTTON = 4
 
 class IndicatorBoard:
     READY = (0,255,0)
