@@ -1,36 +1,40 @@
 """Phoque button entry point."""
 
 import asyncio
-import requests
-from gpiozero import Button
+import logging
 from signal import pause
 
-SERVER_URL = "http://192.168.1.1:8000"
-GPIO_PIN = 18
+import requests
 
-call_button = Button(GPIO_PIN, pull_up=True, bounce_time=0.1)
+from camera import Camera
+from printer import Printer
+from composer import Composer, Mode
+from button import PhoqueButton
+
+HEARTBEAT_URL = "http://192.168.1.1:8000/queue"
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("/var/log/phoque_server.log"),
+        logging.StreamHandler()
+    ]
+)
+
+def main():
+    with Camera() as camera:
+        composer = Composer(camera, Printer(), Mode.TICKET)
+        button = PhoqueButton(composer)
+        button.listen()
+
+        pause()
 
 async def emit_heartbeat():
     while True:
-        requests.get(SERVER_URL + "/heartbeat/", timeout=3)
+        requests.get(HEARTBEAT_URL, timeout=3)
         await asyncio.sleep(5)
 
-def call_next_number():
-    try:
-        response = requests.get(SERVER_URL + "/serve", timeout=3)
-        if response.status_code == 200:
-            print(f"Success: Called ticket {response.text}")
-        else:
-            print(f"Server error: {response.status_code}")
-    except requests.exceptions.RequestException as e:
-        print(f"Network error: {e}")
-
-call_button.when_pressed = call_next_number
-
-def main():
-    """Run the Phoque button client."""
-    asyncio.create_task(emit_heartbeat())
-    pause()
-
 if __name__ == "__main__":
+    asyncio.create_task(emit_heartbeat())
     main()

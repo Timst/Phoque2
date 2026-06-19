@@ -8,9 +8,9 @@ from gpiozero import Button as GpioButton
 
 from .composer import Composer
 
-SERVER_URL = "http://192.168.1.1:8000/queue"
+QUEUE_URL = "http://192.168.1.1:8000/queue"
 
-class Button:
+class PhoqueButton:
     composer: Composer
 
     button: GpioButton
@@ -37,7 +37,7 @@ class Button:
         if self.last_press_timestamp is not None and time.time() - self.last_press_timestamp < 1:
             logging.warning("Throttling call.")
         else:
-            new_ticket =  self.queue()
+            new_ticket = self.queue()
 
             if new_ticket is not None:
                 self.composer.make_ticket(new_ticket)
@@ -46,7 +46,7 @@ class Button:
 
     def queue(self) -> int | None:
         try:
-            response = requests.get(SERVER_URL, timeout=3)
+            response = requests.get(QUEUE_URL, timeout=3)
 
             if response.status_code == 200:
                 number = int(response.text())
